@@ -56,10 +56,8 @@ def get_download_status(lines, threshold_minutes=2):
                 log_time = datetime.datetime.strptime(
                     timestamp_str, '%Y-%m-%d %H:%M:%S')
                 if now - log_time < datetime.timedelta(minutes=threshold_minutes):
-                    speed = speed_val
                     status = DOWNLOAD_STATUS
-                else:
-                    speed = speed_val
+                speed = speed_val
                 break
             except ValueError:
                 continue
@@ -81,12 +79,12 @@ def run_monitoring(steam_path):
 
         appid, speed, status = analyze_log(
             os.path.join(steam_path, 'logs', 'content_log.txt'))
-        game_name = get_game_name(steam_path, appid)
+        game_name = get_game_name(steam_path, appid) if appid else ''
         timestamp = start.strftime("[%H:%M:%S]")
         print(f'{timestamp} Игра: {game_name} | Скорость: {speed} | Статус: {status}')
 
         if i == 4:
-            print('--- Цикл завершен ---\n')
+            print('--- Мониторинг завершен ---\n')
             break
 
         end = datetime.datetime.now()
@@ -101,7 +99,7 @@ def run_monitoring(steam_path):
 
 def main():
     steam_path = get_steam_path_from_registry()
-    print("Команды: 'go' - запустить мониторинг, любой другой текст - выход")
+    print("Команды: 'go' - запустить мониторинг на 5 минут, любой другой текст - выход")
     while True:
         user_input = input('User> ').strip().lower()
         if user_input == 'go':
